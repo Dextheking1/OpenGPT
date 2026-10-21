@@ -1,3 +1,7 @@
+from app.observability import configure_langsmith
+
+configure_langsmith()
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.router.chat import chat_router
