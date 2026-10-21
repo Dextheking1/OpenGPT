@@ -1,6 +1,6 @@
-"""LangSmith trace-based evaluation helpers for OpenGPT.
+"""LangSmith evaluation helpers for OpenGPT.
 
-This package is intentionally lightweight: it provides a trace-driven report
-from the runs already emitted into LangSmith and can be extended into a dataset-
-based evaluation harness later if needed.
+- ``online_eval.py``: trace-driven JSON reporting from runs already in LangSmith
+- ``langsmith_dataset_eval.py``: snapshot recent traces into LangSmith datasets
+  and launch native LangSmith experiments
 """
