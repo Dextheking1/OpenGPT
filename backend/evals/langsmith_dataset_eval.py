@@ -305,7 +305,10 @@ def build_snapshot_examples(project_name: str, limit: int) -> dict[str, list[dic
 # ---------------------------------------------------------------------------
 
 def _create_dataset_snapshot(client: Client, dataset_name: str, description: str, examples: list[dict[str, Any]]) -> int:
-    dataset = client.create_dataset(dataset_name=dataset_name, description=description)
+    try:
+        dataset = client.create_dataset(dataset_name=dataset_name, description=description)
+    except TypeError:
+        dataset = client.create_dataset(name=dataset_name, description=description)
     for example in examples:
         client.create_example(
             inputs=example["inputs"],
@@ -313,6 +316,24 @@ def _create_dataset_snapshot(client: Client, dataset_name: str, description: str
             dataset_id=dataset.id,
         )
     return len(examples)
+
+
+def _run_native_evaluation(
+    *,
+    target: Any,
+    dataset_name: str,
+    evaluators: list[Any],
+    experiment_prefix: str,
+) -> Any:
+    try:
+        return evaluate(
+            target=target,
+            data=dataset_name,
+            evaluators=evaluators,
+            experiment_prefix=experiment_prefix,
+        )
+    except TypeError:
+        return evaluate(target, dataset_name, evaluators=evaluators, experiment_prefix=experiment_prefix)
 
 
 # ---------------------------------------------------------------------------
@@ -429,9 +450,9 @@ def run_langsmith_dataset_eval(project_name: str = DEFAULT_PROJECT, limit: int =
         )
         manifest["datasets"]["chat"] = {"name": dataset_name, "examples": count}
 
-        evaluate(
+        _run_native_evaluation(
             target=_predict_chat,
-            data=dataset_name,
+            dataset_name=dataset_name,
             evaluators=[_chat_response_present, _chat_response_similarity],
             experiment_prefix=f"{dataset_name} experiment",
         )
@@ -446,9 +467,9 @@ def run_langsmith_dataset_eval(project_name: str = DEFAULT_PROJECT, limit: int =
         )
         manifest["datasets"]["retrieval"] = {"name": dataset_name, "examples": count}
 
-        evaluate(
+        _run_native_evaluation(
             target=_predict_retrieval,
-            data=dataset_name,
+            dataset_name=dataset_name,
             evaluators=[_retrieval_context_present, _retrieval_source_match, _retrieval_context_similarity],
             experiment_prefix=f"{dataset_name} experiment",
         )
