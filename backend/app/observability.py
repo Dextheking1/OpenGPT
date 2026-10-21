@@ -28,6 +28,7 @@ def configure_langsmith() -> dict[str, str | bool]:
     endpoint = os.getenv("LANGSMITH_ENDPOINT") or os.getenv(
         "LANGCHAIN_ENDPOINT", "https://api.smith.langchain.com"
     )
+    api_key = os.getenv("LANGSMITH_API_KEY") or os.getenv("LANGCHAIN_API_KEY")
 
     os.environ.setdefault("LANGSMITH_TRACING", "true" if tracing_enabled else "false")
     os.environ.setdefault("LANGCHAIN_TRACING_V2", "true" if tracing_enabled else "false")
@@ -35,6 +36,9 @@ def configure_langsmith() -> dict[str, str | bool]:
     os.environ.setdefault("LANGCHAIN_PROJECT", project)
     os.environ.setdefault("LANGSMITH_ENDPOINT", endpoint)
     os.environ.setdefault("LANGCHAIN_ENDPOINT", endpoint)
+    if api_key:
+        os.environ.setdefault("LANGSMITH_API_KEY", api_key)
+        os.environ.setdefault("LANGCHAIN_API_KEY", api_key)
 
     return {
         "tracing_enabled": tracing_enabled,
