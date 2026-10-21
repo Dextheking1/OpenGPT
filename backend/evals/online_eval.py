@@ -22,7 +22,7 @@ import argparse
 import json
 import math
 import os
-from collections import Counter, defaultdict
+from collections import defaultdict
 from dataclasses import asdict, dataclass
 from datetime import UTC, datetime
 from pathlib import Path
