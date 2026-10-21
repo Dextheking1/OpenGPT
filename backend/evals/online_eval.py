@@ -102,9 +102,16 @@ def _flatten_text(value: Any) -> str:
         return value
     if isinstance(value, (int, float, bool)):
         return str(value)
+    if hasattr(value, "content"):
+        try:
+            content = getattr(value, "content")
+            if content is not None:
+                return _flatten_text(content)
+        except Exception:
+            pass
     if isinstance(value, dict):
         bits = []
-        for key in ("response", "answer", "content", "output", "text", "final", "final_report"):
+        for key in ("response", "answer", "content", "output", "text", "final", "final_report", "messages"):
             if key in value:
                 bits.append(_flatten_text(value.get(key)))
         if bits:
