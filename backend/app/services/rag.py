@@ -5,6 +5,7 @@ from langchain_community.document_loaders import PyPDFLoader, TextLoader
 from langchain_community.vectorstores import FAISS
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
+from langsmith import traceable
 
 # Document types supported for upload (RAG context).
 SUPPORTED_EXTENSIONS = (".pdf", ".md", ".txt")
@@ -117,6 +118,7 @@ def _get_retriever(thread_id: Optional[str]):
     return None
 
 
+@traceable(name="rag.ingest_document")
 def ingest_document(file_bytes: bytes, thread_id: str, filename: Optional[str] = None, embeddings: Optional[Any] = None) -> dict:
     """
     Build a FAISS retriever for an uploaded document (.pdf, .md, .txt) and store
@@ -163,6 +165,7 @@ def ingest_document(file_bytes: bytes, thread_id: str, filename: Optional[str] =
 ingest_pdf = ingest_document
 
 
+@traceable(name="rag.retrieve_from_document")
 def retrieve_from_document(query: str, thread_id: str) -> dict:
     """
     Retrieve relevant information from the uploaded PDF for this chat thread.
