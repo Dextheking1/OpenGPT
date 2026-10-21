@@ -20,7 +20,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import os
 import re
 from collections import defaultdict
@@ -411,7 +410,6 @@ def run_langsmith_dataset_eval(project_name: str = DEFAULT_PROJECT, limit: int =
     client = Client()
 
     dataset_prefix = f"{DATASET_PREFIX} {timestamp}"
-    created = {}
     manifest = {
         "metadata": {
             "created_at": datetime.now(UTC).isoformat(timespec="seconds"),
@@ -429,7 +427,6 @@ def run_langsmith_dataset_eval(project_name: str = DEFAULT_PROJECT, limit: int =
             description=f"Snapshot of recent chat traces from LangSmith project {project_name}.",
             examples=snapshot["chat"],
         )
-        created["chat"] = dataset_name
         manifest["datasets"]["chat"] = {"name": dataset_name, "examples": count}
 
         evaluate(
@@ -447,7 +444,6 @@ def run_langsmith_dataset_eval(project_name: str = DEFAULT_PROJECT, limit: int =
             description=f"Snapshot of recent document retrieval traces from LangSmith project {project_name}.",
             examples=snapshot["retrieval"],
         )
-        created["retrieval"] = dataset_name
         manifest["datasets"]["retrieval"] = {"name": dataset_name, "examples": count}
 
         evaluate(
